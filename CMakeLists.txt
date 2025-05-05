@@ -24,28 +24,22 @@ set(PROJECT_SOURCES
     src/core/FileProcessor.cpp
 )
 
-
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(FileModificator
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
     )
-  target_include_directories(FileModificator PRIVATE
-      ${CMAKE_CURRENT_SOURCE_DIR}/src/gui
-      ${CMAKE_CURRENT_SOURCE_DIR}/src/core
-  )
 
-# Define target properties for Android with Qt 6 as:
-#    set_property(TARGET FileModificator APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
-#                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
-# For more information, see https://doc.qt.io/qt-6/qt-add-executable.html#target-creation
+    target_include_directories(FileModificator PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/gui
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/core
+    )
+
 else()
     if(ANDROID)
         add_library(FileModificator SHARED
             ${PROJECT_SOURCES}
         )
-# Define properties for Android with Qt 5 after find_package() calls as:
-#    set(ANDROID_PACKAGE_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/android")
     else()
         add_executable(FileModificator
             ${PROJECT_SOURCES}
@@ -53,14 +47,12 @@ else()
     endif()
 endif()
 
-target_link_libraries(FileModificator PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(FileModificator PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Core)
 
-# Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
-# If you are developing for iOS or macOS you should consider setting an
-# explicit, fixed bundle identifier manually though.
 if(${QT_VERSION} VERSION_LESS 6.1.0)
   set(BUNDLE_ID_OPTION MACOSX_BUNDLE_GUI_IDENTIFIER com.example.FileModificator)
 endif()
+
 set_target_properties(FileModificator PROPERTIES
     ${BUNDLE_ID_OPTION}
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
