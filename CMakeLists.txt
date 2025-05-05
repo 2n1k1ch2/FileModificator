@@ -9,23 +9,32 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(QT_PATH "C:/Qt/6.9.0/mingw_64")
+set(CMAKE_PREFIX_PATH ${QT_PATH})
+
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
 set(PROJECT_SOURCES
-        main.cpp
-        mainwindow.cpp
-        mainwindow.h
-        mainwindow.ui
+    src/main.cpp
+    src/gui/mainwindow.cpp
+    src/gui/mainwindow.h
+    src/core/FileProcessor.h
+    src/gui/mainwindow.ui
+    src/core/FileProcessor.cpp
 )
+
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
     qt_add_executable(FileModificator
         MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
-        FileProcessor.h FileProcessor.cpp
-
     )
+  target_include_directories(FileModificator PRIVATE
+      ${CMAKE_CURRENT_SOURCE_DIR}/src/gui
+      ${CMAKE_CURRENT_SOURCE_DIR}/src/core
+  )
+
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET FileModificator APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
 #                 ${CMAKE_CURRENT_SOURCE_DIR}/android)
